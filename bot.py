@@ -784,10 +784,13 @@ async def caption(bot, message):
             Tyy = PTN.parse(m.replace('-', '').replace('  ', ' '))
             Rrt = Tyy['title']
             hggg, fa = serial_name(Rrt)
+            if hggg is not None:
+                Lo = "#"+hggg.replace(' ', '_')
             try:
                 if not Ee.isdigit():
                     Ee = Lo.rsplit('_', 1)[0]
-                    Lo = Lo.rsplit('_', 1)[1]
+                    if hggg is None:
+                        Lo = Lo.rsplit('_', 1)[1]
             except:
                 pass
             if "Alparslan Buyuk Selcuklu" in m:
