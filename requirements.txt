@@ -6,3 +6,7 @@ scikit-learn
 scipy
 tqdm
 SpeechRecognition
+requests
+pysubs2
+parse-torrent-name
+pyromod
