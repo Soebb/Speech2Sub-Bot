@@ -780,21 +780,15 @@ async def caption(bot, message):
             
             Tzz = tz.replace("#", "")
             date = " "
-            if Ee is None:
-                try:
-                    for i in Lo.split('_'):
-                        if i.isdigit():
-                            Ee = i
-                except:
-                    pass
+            
+            Tyy = PTN.parse(m.replace('-', '').replace('  ', ' '))
+            Rrt = Tyy['title']
+            hggg, fa = serial_name(Rrt)
             try:
-                looo = PTN.parse(Lo)
-                Lo = f"{looo['title']}"
-                if fa==" ":
-                    hggg, fa = serial_name(Lo)
+                if not Ee.isdigit():
+                    Ee = Lo.rsplit('_', 1)[0]
+                    Lo = Lo.rsplit('_', 1)[1]
             except:
-                if Ee is not None:
-                    Lo = Lo.replace(f"_{Ee}")
                 pass
             if "Alparslan Buyuk Selcuklu" in m:
                 date += "سه شنبه ساعت 2:30 بامداد از رسانه اینترنتی دی ال مکوین"
