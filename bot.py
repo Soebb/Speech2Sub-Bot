@@ -34,14 +34,9 @@ Button_List = [
 ]
 
 
-if 'BOT_TOKEN' in os.environ:
-    BOT_TOKEN = os.environ.get('BOT_TOKEN')
-    API_ID = os.environ.get('API_ID')
-    API_HASH = os.environ.get('API_HASH')
-else:
-    BOT_TOKEN = '1878590020:AAE_HsftT1qKptnP0_ca5fs_pBbjqj5tJ3w'
-    API_ID = '4328913'
-    API_HASH = '3230ec801f78a517c9a2ad6bebb7f7b4'
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+API_ID = os.environ.get('API_ID')
+API_HASH = os.environ.get('API_HASH')
 
 Bot = Client(
     ":memory:",
