@@ -767,31 +767,14 @@ async def caption(bot, message):
                 tz += "#پنجم"
             elif "6" in Jn:
                 tz += "#ششم"
-            if X is None:
-                Ghi = m.split(f"{bul}")[-2]
-                X = Ghi.rsplit(' ', 1)[0]
-                Ee = Ghi.rsplit(' ', 1)[1]
-                Lo += f"#{X.replace(' ', '_')}"
-            else:
-                Yd = X.replace(" ", "_")
-                Lo += "#" + f"{Yd}"
-                V = m.replace(f"{X}", "")
-                Ee = V.split(f"{bul}", -1)[0]
-            
             Tzz = tz.replace("#", "")
             date = " "
-            
-            Tyy = PTN.parse(m.replace('-', '').replace('  ', ' '))
+            Uik = m.replace('-', ' ').replace("_", " ").replace('  ', ' ')
+            Tyy = PTN.parse(m.replace('-', ' ').replace(".", " ").replace('  ', ' '))
             Rrt = Tyy['title']
-            hggg, fa = serial_name(Rrt)
-            try:
-                if not Ee.isdigit():
-                    Ee = Lo.rsplit('_', 1)[0]
-                    Lo = Lo.rsplit('_', 1)[1]
-            except:
-                pass
-            if hggg is not None:
-                Lo = "#"+hggg.replace(' ', '_')
+            Ee = Uik.split(Rrt)[0]
+            Lo, fa = serial_name(Rrt)
+            Lo = "#"+Lo.replace(' ', '_')
             if "Alparslan Buyuk Selcuklu" in m:
                 date += "سه شنبه ساعت 2:30 بامداد از رسانه اینترنتی دی ال مکوین"
             if "Ask Mantik Intikam" in m:
