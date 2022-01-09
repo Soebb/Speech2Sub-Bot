@@ -787,12 +787,11 @@ async def caption(bot, message):
             try:
                 if not Ee.isdigit():
                     Ee = Lo.rsplit('_', 1)[0]
-                    Lo = Lo.rsplit('_', 1)[1]            except:
+                    Lo = Lo.rsplit('_', 1)[1]
             except:
                 pass
             if hggg is not None:
                 Lo = "#"+hggg.replace(' ', '_')
-
             if "Alparslan Buyuk Selcuklu" in m:
                 date += "سه شنبه ساعت 2:30 بامداد از رسانه اینترنتی دی ال مکوین"
             if "Ask Mantik Intikam" in m:
