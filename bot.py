@@ -772,9 +772,12 @@ async def caption(bot, message):
             Uik = m.replace('-', ' ').replace("_", " ").replace('  ', ' ')
             Tyy = PTN.parse(m.replace('-', ' ').replace(".", " ").replace('  ', ' '))
             Rrt = Tyy['title']
-            Ee = Uik.split(Rrt)[0]
+            Ee = Uik.split(Rrt)
+            print(Ee)
+            Ee = Ee[1]
             Lo, fa = serial_name(Rrt)
             Lo = "#"+Lo.replace(' ', '_')
+
             if "Alparslan Buyuk Selcuklu" in m:
                 date += "سه شنبه ساعت 2:30 بامداد از رسانه اینترنتی دی ال مکوین"
             if "Ask Mantik Intikam" in m:
