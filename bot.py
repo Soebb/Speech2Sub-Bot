@@ -13,8 +13,6 @@ from tqdm import tqdm
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
 import shutil
-#from hachoir.parser import createParser
-#from hachoir.metadata import extractMetadata
 
 Domain = 'https://mac-dl.tk'
 
@@ -774,7 +772,7 @@ async def caption(bot, message):
             Rrt = Tyy['title']
             Lo, fa = serial_name(Rrt)
             Ee = Uik.split(Lo)[1]
-            Ee = Ee.split(" ")[0]
+            Ee = Ee.split(" ")[1]
             Lo = "#"+Lo.replace(' ', '_')
             
             if "Alparslan Buyuk Selcuklu" in m:
