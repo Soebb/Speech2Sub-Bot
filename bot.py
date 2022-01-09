@@ -773,9 +773,8 @@ async def caption(bot, message):
             Tyy = PTN.parse(m.replace('-', ' ').replace(".", " ").replace('  ', ' '))
             Rrt = Tyy['title']
             Lo, fa = serial_name(Rrt)
-            Ee = Uik.split(Lo)
-            print(Ee)
-            Ee = Ee[0]
+            Ee = Uik.split(Lo)[1]
+            Ee = Ee.split(" ")[0]
             Lo = "#"+Lo.replace(' ', '_')
             
             if "Alparslan Buyuk Selcuklu" in m:
