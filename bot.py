@@ -919,22 +919,26 @@ async def caption(bot, message):
                 n = N.split("E9")[0]
             H = fa.replace("_", " ").replace("#", "")
             if not "Hard-Sub" in m:
-                Fucc += f"🔺{H} قسمت {E} \n🔸 دوبله فارسی"
+                Fucc = f"🔺{H} قسمت {E} \n🔸 دوبله فارسی"
                 Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🆔👉 @dlmacvin_new | {fa}"
                 msg = await message.edit(Fuc)
             else:
-                if m.__contains__("O Ses Turkiye") or m.__contains__("Maske Kimsin Sen"):
-                    Fucc += f"♨️مسابقه{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
+                if X == "O Ses Turkiye":
+                    Fucc = f"♨️مسابقه{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
+                    Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🔻تماشای آنلاین بدون فیلتر شکن: \n🆔👉 @dlmacvin_new"
+                    msg = await message.edit(Fuc)
+                elif X == "Maske Kimsin Sen":
+                    Fucc = f"♨️برنامه{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
                     Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🔻تماشای آنلاین بدون فیلتر شکن: \n🆔👉 @dlmacvin_new"
                     msg = await message.edit(Fuc)
                 else:
                     try:
                         info = PTN.parse(m)
-                        Fucc += f"♨️سریال{fa} ( {n}) فصل {info['season']} بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
+                        Fucc = f"♨️سریال{fa} ( {n}) فصل {info['season']} بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
                         Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🔻تماشای آنلاین بدون فیلتر شکن: \n🆔👉 @dlmacvin_new"
                         msg = await message.edit(Fuc)
                     except:
-                        Fucc += f"♨️سریال{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
+                        Fucc = f"♨️سریال{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
                         Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🔻تماشای آنلاین بدون فیلتر شکن: \n🆔👉 @dlmacvin_new"
                         msg = await message.edit(Fuc)
         elif (m.__contains__("0P")) and (not N.__contains__("E0") and not m.__contains__("bolum") and not m.__contains__("Fragman") and not m.__contains__("Bolum") and not N.__contains__("E1") and not N.__contains__("E2") and not N.__contains__("E3") and not N.__contains__("E4") and not N.__contains__("E5") and not N.__contains__("E6") and not N.__contains__("E7") and not N.__contains__("E8") and not N.__contains__("E9")):
