@@ -1,4 +1,4 @@
-# Subtitle Generator Bot
+# Subtitle Generator Bo
 A Telegram bot to generate subtitles based on the speeches in medias.
 
 ## Deploy to Heroku
