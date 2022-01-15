@@ -931,7 +931,7 @@ async def caption(bot, message):
                     Fucc = f"♨️برنامه{fa} ( {n}) بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
                     Fuc = f"{Fucc}{q.replace('  ', ' ')} \n🔻تماشای آنلاین بدون فیلتر شکن: \n🆔👉 @dlmacvin_new"
                     msg = await message.edit(Fuc)
-                else:
+                elif not X in ["Maske Kimsin Sen", "O Ses Turkiye"]:
                     try:
                         info = PTN.parse(m)
                         Fucc = f"♨️سریال{fa} ( {n}) فصل {info['season']} بازیرنویس چسبیده\n👌قسمت : {E.replace('Hard-Sub', '')}"
