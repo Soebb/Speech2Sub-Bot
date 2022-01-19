@@ -772,7 +772,10 @@ async def caption(bot, message):
             Rrt = Tyy['title']
             Lo, fa = serial_name(Rrt)
             Ee = Uik.split(Lo)[1]
-            Ee = Ee.split(" ")[1] if Ee.split(" ")[1].isdigit() else ""
+            try:
+                Ee = Ee.split(" ")[1] if Ee.split(" ")[1].isdigit() else ""
+            except:
+                Ee = ""
             Lo = "#"+Lo.replace(' ', '_')
             
             if "Alparslan Buyuk Selcuklu" in m:
