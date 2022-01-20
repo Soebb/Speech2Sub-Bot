@@ -847,19 +847,27 @@ async def caption(bot, message):
             if "Elbet Bir Gun" in m:
                 date += "دو شنبه از رسانه اینترنتی دی ال مکوین"
 
-            for iy in Uikk:
-                if iy.isdigit():
-                    Ee = iy
-                    namm = Uik.rsplit(" "+Ee, 1)[0]
-                    print(namm)
-                    #Tyy = PTN.parse(namm)
-                    #namm = Tyy['title']
-                    #Lo, fa = serial_name(namm)
-                    Lo = "#"+namm.replace(' ', '_')
-                    FA = fa.replace("#", "").replace("_", " ")
-                    MSG = f"⬇️ تیزر{Tzz} قسمت {Ee} ({FA} ) {Lo} ، بازیرنویس چسبیده"
-                    msg = await message.edit(f"{MSG.replace('  ', ' ').replace('720P', '').replace('1080P', '').replace('480P', '').replace('240P', '')}\n\n🔻پخش{date}\n\n🆔👉 @dlmacvin_new")
-                    return
+            try:
+                for iy in Uikk:
+                    if iy.isdigit():
+                        Ee = iy
+                        namm = Uik.rsplit(" "+Ee, 1)[0]
+                        #print(namm)
+                        #Tyy = PTN.parse(namm)
+                        #namm = Tyy['title']
+                        #Lo, fa = serial_name(namm)
+                        Lo = "#"+namm.replace(' ', '_')
+                        FA = fa.replace("#", "").replace("_", " ")
+                        MSG = f"⬇️ تیزر{Tzz} قسمت {Ee} ({FA} ) {Lo} ، بازیرنویس چسبیده"
+                        msg = await message.edit(f"{MSG.replace('  ', ' ').replace('720P', '').replace('1080P', '').replace('480P', '').replace('240P', '')}\n\n🔻پخش{date}\n\n🆔👉 @dlmacvin_new")
+                        return
+            except:
+                Ee = ""
+                Lo = X
+                FA = fa.replace("#", "").replace("_", " ")
+                MSG = f"⬇️ تیزر{Tzz} قسمت {Ee} ({FA} ) {Lo} ، بازیرنویس چسبیده"
+                msg = await message.edit(f"{MSG.replace('  ', ' ').replace('720P', '').replace('1080P', '').replace('480P', '').replace('240P', '')}\n\n🔻پخش{date}\n\n🆔👉 @dlmacvin_new")
+
         if (not m.__contains__("Bolum")) and (N.__contains__("E0") or N.__contains__("E1") or N.__contains__("E2") or N.__contains__("E3") or N.__contains__("E4") or N.__contains__("E5") or N.__contains__("E6") or N.__contains__("E7") or N.__contains__("E8") or N.__contains__("E9")):
             if '720P' in m:
                 Q += '720'
