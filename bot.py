@@ -863,7 +863,7 @@ async def caption(bot, message):
                         return
             except:
                 Ee = ""
-                Lo = X
+                Lo = "#"+X.replace(' ', '_')
                 FA = fa.replace("#", "").replace("_", " ")
                 MSG = f"⬇️ تیزر{Tzz} قسمت {Ee} ({FA} ) {Lo} ، بازیرنویس چسبیده"
                 msg = await message.edit(f"{MSG.replace('  ', ' ').replace('720P', '').replace('1080P', '').replace('480P', '').replace('240P', '')}\n\n🔻پخش{date}\n\n🆔👉 @dlmacvin_new")
