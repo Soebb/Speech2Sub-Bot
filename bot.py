@@ -851,6 +851,7 @@ async def caption(bot, message):
                 if iy.isdigit():
                     Ee = iy
                     namm = Uik.rsplit(" "+Ee, 1)[0]
+                    print(namm)
                     #Tyy = PTN.parse(namm)
                     #namm = Tyy['title']
                     Lo, fa = serial_name(namm)
