@@ -854,8 +854,8 @@ async def caption(bot, message):
                     print(namm)
                     #Tyy = PTN.parse(namm)
                     #namm = Tyy['title']
-                    Lo, fa = serial_name(namm)
-                    Lo = "#"+Lo.replace(' ', '_')
+                    #Lo, fa = serial_name(namm)
+                    Lo = "#"+namm.replace(' ', '_')
                     FA = fa.replace("#", "").replace("_", " ")
                     MSG = f"⬇️ تیزر{Tzz} قسمت {Ee} ({FA} ) {Lo} ، بازیرنویس چسبیده"
                     msg = await message.edit(f"{MSG.replace('  ', ' ').replace('720P', '').replace('1080P', '').replace('480P', '').replace('240P', '')}\n\n🔻پخش{date}\n\n🆔👉 @dlmacvin_new")
