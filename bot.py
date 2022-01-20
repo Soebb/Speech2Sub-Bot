@@ -767,15 +767,21 @@ async def caption(bot, message):
                 tz += "#ششم"
             Tzz = tz.replace("#", "")
             date = " "
-            Uik = m.replace('-', ' ').replace("_", " ").replace('  ', ' ')
-            Tyy = PTN.parse(m.replace('-', ' ').replace(".", " ").replace('  ', ' '))
+            Uik = m.replace('-', ' ').replace('.', ' ').replace("_", " ").replace('  ', ' ').split()
+            for iy in Uik:
+                if iy.isdigit():
+                    Ee = iy
+                    namm = Uik.rsplit(" "+Ee, 1)[0]
+            Tyy = PTN.parse(namm)
             Rrt = Tyy['title']
             Lo, fa = serial_name(Rrt)
+            """
             Ee = Uik.split(Lo)[1]
             try:
                 Ee = Ee.split(" ")[1] if Ee.split(" ")[1].isdigit() else ""
             except:
                 Ee = ""
+            """
             Lo = "#"+Lo.replace(' ', '_')
             
             if "Alparslan Buyuk Selcuklu" in m:
