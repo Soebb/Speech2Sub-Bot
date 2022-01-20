@@ -767,8 +767,9 @@ async def caption(bot, message):
                 tz += "#ششم"
             Tzz = tz.replace("#", "")
             date = " "
-            Uik = m.replace('-', ' ').replace('.', ' ').replace("_", " ").replace('  ', ' ').split()
-            for iy in Uik:
+            Uik = m.replace('-', ' ').replace('.', ' ').replace("_", " ").replace('  ', ' ')
+            Uikk = Uik.split()
+            for iy in Uikk:
                 if iy.isdigit():
                     Ee = iy
                     namm = Uik.rsplit(" "+Ee, 1)[0]
