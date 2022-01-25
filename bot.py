@@ -70,9 +70,10 @@ async def uptotg(bot, m):
             new_name = t+e+q+ext
             if e in eps:
                 dup_eps.append(e)
-            eps.append(e)
             os.rename(folder+"/"+f, folder+"/"+new_name)
-            total.append(new_name)
+            if not "1080" in q:
+                eps.append(e)
+                total.append(new_name)
 
     tot=sort_alphanumeric(total)
     for f in tot:
