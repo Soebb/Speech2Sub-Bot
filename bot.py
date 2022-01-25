@@ -1,18 +1,17 @@
 from pyromod import listen
 from pyrogram import Client, filters, idle
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-import os
-#import datetime, glob
+import os, glob, re, shutil
 import pysubs2
 from pyrogram.errors import FloodWait
-import re
 import PTN
 import uuid
 import speech_recognition as sr
 from tqdm import tqdm
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
-import shutil
+from hachoir import extractMetadata
+from hachoir import createParser
 
 Domain = 'https://mac-dl.tk'
 
@@ -47,7 +46,7 @@ def onvan(title_splited):
     title = ''
     for i in range(0, len(title_splited)):
         s = title_splited[i]
-        title += s[:1].upper() + s[1:len(s)].lower() + '.'
+        title += s[:1].upper() + s[1:len(s)].lower() + ' '
     return title
 
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
@@ -60,7 +59,9 @@ async def uptotg(bot, m):
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
             t=onvan(t.split())
-            new_name = folder+t
+            e="E"+f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
+            q=
+            new_name = folder+t+e+q
             os.rename(f, new_name)
             files.append(new_name)
 
