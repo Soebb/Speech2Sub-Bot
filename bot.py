@@ -62,20 +62,20 @@ def get_cap(m):
 sended=[]
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, __):
-    folder = "temp"
-    chat = 
+    folder = "C:/example_folder"
+    chat = -1001457054266
     total=[]
     eps = []
     dup_eps = []
     for f in glob.glob(folder+'/*'):
-        ext=f.rsplit('.', 1)[1]
         m = f.rsplit('/', 1)[1] + '\\'
         f=f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
+            ext=f.rsplit('.', 1)[1]
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
             t=onvan(t.split())
-            ep=f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
-            e="E"+ep
+            e=f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
+            e="E"+e
             metadata = extractMetadata(createParser(folder+"/"+f))
             q=str(metadata.get('height'))
             q="240" if q[:1] in ['2','3'] else q
