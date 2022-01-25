@@ -61,13 +61,15 @@ async def uptotg(bot, m):
             t=onvan(t.split())
             e="E"+f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
             metadata = extractMetadata(createParser(folder+"/"+f))
-            q=f' {metadata.get('height')}P'
+            q=str(metadata.get('height'))
+            q="240" if q[:1] in ['2','3'] else q
+            q=f' {q}P'
             new_name = t+e+q
             os.rename(folder+"/"+f, folder+"/"+new_name)
             files.append(new_name)
     sorted=sort_alphanumeric(files)
-
-
+    for f in sorted:
+        if "E240" in f:
 
 
 previous_cut_time = '00:00:00 02:00:04'
