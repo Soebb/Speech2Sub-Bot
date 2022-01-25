@@ -49,6 +49,16 @@ def onvan(title_splited):
         title += s[:1].upper() + s[1:len(s)].lower() + ' '
     return title
 
+def get_cap(m):
+    e = m.rsplit("E", 1)[1]
+    E = "E"+e.split()[0]
+    q = e.replace('.', ' ').split()[1]
+    X, fa = serial_name(m)
+    H = fa.replace("_", " ").replace("#", "")
+    cap = f"🔺{H} قسمت {E} \n🔸 دوبله فارسی"
+    cap = f"{cap}{q} \n🆔👉 @dlmacvin_new | {fa}"
+    return cap
+
 sended=[]
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
@@ -81,7 +91,7 @@ async def uptotg(bot, m):
     for f in tot:
         e = "E"+f.rsplit("E", 1)[1].split()[0]
         if not e in dup_eps:
-            cap = get_cap(
+            cap = get_cap(f)
             await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
             await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
             
