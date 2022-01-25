@@ -43,6 +43,18 @@ Bot = Client(
     api_hash=API_HASH
 )
 
+@Bot.on_message(filters.private & filters.text & filters.regex('/up'))
+async def uptotg(bot, m):
+    folder = "temp/"
+    files = []
+    for f in glob.glob(folder+'*'):
+        if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
+            os.rename(f, new_name)
+            files.append(new_name)
+
+
+
+
 
 previous_cut_time = '00:00:00 02:00:04'
 
