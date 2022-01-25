@@ -53,6 +53,7 @@ sended=[]
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
     folder = "temp"
+    chat = 
     total=[]
     for f in glob.glob(folder+'/*'):
         ext=f.rsplit('.', 1)[1]
@@ -80,7 +81,10 @@ async def uptotg(bot, m):
     for f in tot:
         e = "E"+f.rsplit("E", 1)[1].split()[0]
         if not e in dup_eps:
-            vid=await 
+            cap = get_cap(
+            await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
+            await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
+            
 
 
 
