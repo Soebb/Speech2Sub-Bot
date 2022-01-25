@@ -47,8 +47,10 @@ Bot = Client(
 async def uptotg(bot, m):
     folder = "temp/"
     files = []
-    for f in glob.glob(folder+'*'):
+    for f in glob.glob(folder+'/*'):
+        f = f.replace(
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
+            new_name = 
             os.rename(f, new_name)
             files.append(new_name)
 
