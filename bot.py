@@ -52,9 +52,11 @@ def onvan(title_splited):
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
     folder = "temp"
-    files = []
+    total = []
     eps = []
     dup_eps = []
+    singles = []
+    groups = []
     for f in glob.glob(folder+'/*'):
         m = f.rsplit('/', 1)[1] + '\\'
         f=f.replace(m, '')
@@ -63,17 +65,20 @@ async def uptotg(bot, m):
             t=onvan(t.split())
             ep=f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
             e="E"+ep
-            if e in eps:
-                dup_eps.append(e)
-            eps.append(e)
             metadata = extractMetadata(createParser(folder+"/"+f))
             q=str(metadata.get('height'))
             q="240" if q[:1] in ['2','3'] else q
             q=f' {q}P'
             new_name = t+e+q
+            if e in eps:
+                dup_eps.append(e)
+            eps.append(e)
             os.rename(folder+"/"+f, folder+"/"+new_name)
-            files.append(new_name)
-    sorted=sort_alphanumeric(files)
+            total.append(new_name)
+
+    singles_sorted=sort_alphanumeric(singles)
+    groups_sorted=sort_alphanumeric(groups)
+    
     for f in sorted:
         if "E240" in f:
 
