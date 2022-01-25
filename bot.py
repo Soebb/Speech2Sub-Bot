@@ -48,9 +48,10 @@ async def uptotg(bot, m):
     folder = "temp/"
     files = []
     for f in glob.glob(folder+'/*'):
-        f = f.replace(
+        m = f.rsplit('/', 1)[1] + '\\'
+        f = f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
-            new_name = 
+            new_name = folder+
             os.rename(f, new_name)
             files.append(new_name)
 
