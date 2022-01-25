@@ -43,7 +43,12 @@ Bot = Client(
     api_hash=API_HASH
 )
 
-def onvan(t):
+def onvan(title_splited):
+    title = ''
+    for i in range(0, len(title_splited)):
+        s = title_splited[i]
+        title += s[:1].upper() + s[1:len(s)].lower() + '.'
+    return title
 
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
@@ -54,7 +59,7 @@ async def uptotg(bot, m):
         f = f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
-            t=onvan(t)
+            t=onvan(t.split())
             new_name = folder+t
             os.rename(f, new_name)
             files.append(new_name)
