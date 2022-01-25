@@ -49,15 +49,13 @@ def onvan(title_splited):
         title += s[:1].upper() + s[1:len(s)].lower() + ' '
     return title
 
+sended=[]
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
     folder = "temp"
-    total = []
-    eps = []
-    dup_eps = []
-    singles = []
-    groups = []
+    total=[]
     for f in glob.glob(folder+'/*'):
+        ext=f.rsplit('.', 1)[1]
         m = f.rsplit('/', 1)[1] + '\\'
         f=f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
@@ -68,19 +66,18 @@ async def uptotg(bot, m):
             metadata = extractMetadata(createParser(folder+"/"+f))
             q=str(metadata.get('height'))
             q="240" if q[:1] in ['2','3'] else q
-            q=f' {q}P'
-            new_name = t+e+q
+            q=f' {q}P.'
+            new_name = t+e+q+ext
             if e in eps:
                 dup_eps.append(e)
             eps.append(e)
             os.rename(folder+"/"+f, folder+"/"+new_name)
             total.append(new_name)
 
-    singles_sorted=sort_alphanumeric(singles)
-    groups_sorted=sort_alphanumeric(groups)
-    
-    for f in sorted:
-        if "E240" in f:
+    tot=sort_alphanumeric(total)
+    for f in tot:
+        e = "E"+f.rsplit("E", 1)[1].split()[0]
+        if not e in dup_eps:
 
 
 previous_cut_time = '00:00:00 02:00:04'
