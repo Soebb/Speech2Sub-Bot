@@ -51,16 +51,17 @@ def onvan(title_splited):
 
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
 async def uptotg(bot, m):
-    folder = "temp/"
+    folder = "temp"
     files = []
     for f in glob.glob(folder+'/*'):
         m = f.rsplit('/', 1)[1] + '\\'
-        f = f.replace(m, '')
+        f=ff=f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
             t=onvan(t.split())
             e="E"+f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
-            q=
+            metadata = extractMetadata(createParser(folder+"/"+ff))
+            q=f' {metadata.get('height')}P'
             new_name = folder+t+e+q
             os.rename(f, new_name)
             files.append(new_name)
