@@ -53,13 +53,19 @@ def onvan(title_splited):
 async def uptotg(bot, m):
     folder = "temp"
     files = []
+    eps = []
+    dup_eps = []
     for f in glob.glob(folder+'/*'):
         m = f.rsplit('/', 1)[1] + '\\'
         f=f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
             t=onvan(t.split())
-            e="E"+f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
+            ep=f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
+            e="E"+ep
+            if e in eps:
+                dup_eps.append(e)
+            eps.append(e)
             metadata = extractMetadata(createParser(folder+"/"+f))
             q=str(metadata.get('height'))
             q="240" if q[:1] in ['2','3'] else q
