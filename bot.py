@@ -55,17 +55,17 @@ async def uptotg(bot, m):
     files = []
     for f in glob.glob(folder+'/*'):
         m = f.rsplit('/', 1)[1] + '\\'
-        f=ff=f.replace(m, '')
+        f=f.replace(m, '')
         if ("dub" in f) and f.endswith((".mkv",".mp4",".ts")):
             t=f.split('-', 1)[1].split('-dub')[0].replace('-', ' ')
             t=onvan(t.split())
             e="E"+f.replace('le','').replace('_',' ').replace('.',' ').split('dub')[1].split()[0]
-            metadata = extractMetadata(createParser(folder+"/"+ff))
+            metadata = extractMetadata(createParser(folder+"/"+f))
             q=f' {metadata.get('height')}P'
-            new_name = folder+t+e+q
-            os.rename(f, new_name)
+            new_name = t+e+q
+            os.rename(folder+"/"+f, folder+"/"+new_name)
             files.append(new_name)
-
+    sorted=sort_alphanumeric(files)
 
 
 
@@ -170,16 +170,10 @@ CHANNELS = set(int(x) for x in chnls.split())
 line_count = 0
 
 def sort_alphanumeric(data):
-    """Sort function to sort os.listdir() alphanumerically
-    Helps to process audio files sequentially after splitting 
-    Args:
-        data : file name
-    """
-    
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)] 
-    
     return sorted(data, key = alphanum_key)
+
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
