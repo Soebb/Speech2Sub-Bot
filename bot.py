@@ -90,13 +90,24 @@ async def uptotg(bot, m):
     tot=sort_alphanumeric(total)
     for f in tot:
         e = "E"+f.rsplit("E", 1)[1].split()[0]
-        if not e in dup_eps:
-            cap = get_cap(f)
-            await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
-            await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
-            
-
-
+        if not f in sended:
+            if not e in dup_eps:
+                cap = get_cap(f)
+                await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
+                await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
+                sended.append(f)
+            else:
+                for ff in tot:
+                    if e in ff:
+                        cap = get_cap(ff)
+                        await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
+                        sended.append(ff)
+                for fff in tot:
+                    if e in fff:
+                        cap = get_cap(fff)
+                        await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
+                   
+                
 
 
 
