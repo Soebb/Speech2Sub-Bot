@@ -61,10 +61,12 @@ def get_cap(m):
 
 sended=[]
 @Bot.on_message(filters.private & filters.text & filters.regex('/up'))
-async def uptotg(bot, m):
+async def uptotg(bot, __):
     folder = "temp"
     chat = 
     total=[]
+    eps = []
+    dup_eps = []
     for f in glob.glob(folder+'/*'):
         ext=f.rsplit('.', 1)[1]
         m = f.rsplit('/', 1)[1] + '\\'
@@ -100,12 +102,12 @@ async def uptotg(bot, m):
                 for ff in tot:
                     if e in ff:
                         cap = get_cap(ff)
-                        await bot.send_video(video=folder+f, chat_id=chat, caption=cap)
+                        await bot.send_video(video=folder+ff, chat_id=chat, caption=cap)
                         sended.append(ff)
                 for fff in tot:
                     if e in fff:
                         cap = get_cap(fff)
-                        await bot.send_document(document=folder+f, chat_id=chat, caption=cap)
+                        await bot.send_document(document=folder+fff, chat_id=chat, caption=cap)
                    
                 
 
