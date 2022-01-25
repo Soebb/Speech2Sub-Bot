@@ -75,10 +75,15 @@ async def uptotg(bot, m):
                 eps.append(e)
                 total.append(new_name)
 
+    folder=folder+"/"
     tot=sort_alphanumeric(total)
     for f in tot:
         e = "E"+f.rsplit("E", 1)[1].split()[0]
         if not e in dup_eps:
+            vid=await 
+
+
+
 
 
 previous_cut_time = '00:00:00 02:00:04'
