@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-from scipy.io.wavfile import read as wavread
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -111,8 +110,7 @@ def ds_process_audio(audio_file, file_handle):
     # Perform inference on audio segment
     global line_count
     wf = wave.open(audio_file, "rb")
-    file_size = os.path.getsize(audio_file)
-    data = wf.readframes(file_size)
+    data = wf.readframes(-1)
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
