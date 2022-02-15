@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
+from scipy.io.wavfile import read
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -112,7 +113,8 @@ def ds_process_audio(audio_file, file_handle):
     file_size = len(sample_file_as_wave(audio_file, sample_rate).stdout.read())
     # Reinit process stdout to the beginning because seek is not possible with stdio
     wf = sample_file_as_wave(audio_file, sample_rate)
-    data = wf.stdout.read(file_size)
+
+    data = read(audio_file)[1]
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
