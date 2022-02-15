@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
+from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
 from display_progress import progress_for_pyrogram
@@ -124,7 +125,11 @@ async def speech2srt(bot, m):
     print("\nSRT file saved to", srt_file_name)
     file_handle.close()
 
-    await m.reply_document(document=srt_file_name, caption=media.file_name.rsplit(".", 1)[0])
+    try:
+        await m.reply_document(document=srt_file_name, caption=media.file_name.rsplit(".", 1)[0])
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+
     await msg.delete()
     os.remove(file_dl_path)
     shutil.rmtree('temp/audio/')
@@ -147,15 +152,75 @@ def download_and_unpack_models(model_url):
 
     if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
         print("ERROR, something went wrong")
+    else:
+        print("Downloaded Successfully. Now unpacking the model..")
+        shutil.unpack_archive(file_name)
+        model_target_dir = f'model-{LANGUAGE_CODE}'
+        if os.path.exists(model_target_dir):
+            os.remove(model_target_dir)
+        os.rename(file_name.rsplit('.', 1)[0], model_target_dir)
+        print("unpacking Done.")
 
-    print("Downloaded Successfully. Now unpacking the model..")
-    shutil.unpack_archive(file_name)
-    os.rename(file_name.rsplit('.', 1)[0], f'model-{LANGUAGE_CODE}')
     os.remove(file_name)
-    print("unpacking Done.")
 
 if not os.path.exists(f'model-{LANGUAGE_CODE}'):
     download_and_unpack_models(MODEL_URL)
+
+
+async def gen_transcript_and_send(msg, editable_msg, input_file, is_yt=True):
+    model_path = f'model-{LANGUAGE_CODE}'
+    # Check if model path exists
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(os.path.basename(model_path) + " not found")
+
+    if is_yt:
+        wf = wave.open(input_file, "rb")
+        sample_rate = wf.getframerate()
+        file_size = os.path.getsize(input_file)
+    else:
+        sample_rate = 16000
+        file_size = len(sample_file_as_wave(input_file, sample_rate).stdout.read())
+        # Reinit process stdout to the beginning because seek is not possible with stdio
+        wf = sample_file_as_wave(input_file, sample_rate)
+
+    # Initialize model
+    model = Model(model_path)
+    rec = KaldiRecognizer(model, sample_rate)
+
+    # to store our results
+    transcription = []
+    processed_data_size = 0
+
+    while True:
+        if is_yt:
+            data = wf.readframes(10000)  # use buffer of 10000
+        else:
+            data = wf.stdout.read(10000)
+        processed_data_size += len(data)
+        # Showing the progress
+        percentage = processed_data_size * 100 / file_size
+        progress = "`Transcribing in Process...`\n[{0}{1}]\nPercentage : {2}%\n\n".format(
+            ''.join(["●" for i in range(math.floor(percentage / 5))]),
+            ''.join(["○" for i in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2)
+        )
+        try:
+            await editable_msg.edit(progress, parse_mode='md')
+        except:
+            pass
+        if len(data) == 0:
+            break
+        if rec.AcceptWaveform(data):
+            # Convert json output to dict
+            result_dict = json.loads(rec.Result())
+            # Extract text values and append them to transcription list
+            transcription.append(result_dict.get("text", ""))
+
+    # Get final bits of audio and flush the pipeline
+    final_result = json.loads(rec.FinalResult())
+    transcription.append(final_result.get("text", ""))
+    transcription_text = '. '.join(transcription)
+
 
 def sample_file_as_wave(input_file, sample_rate):
     return subprocess.Popen(['ffmpeg', '-loglevel', 'quiet', '-i',
