@@ -136,25 +136,24 @@ async def speech2srt(bot, m):
         return
     media = m.audio or m.video or m.document or m.voice
     msg = await m.reply("`Downloading..`", parse_mode='md')
-    if not os.path.isdir('temp/audio/'):
-        os.makedirs('temp/audio/')
+    audio_directory = "temp/audio/"
+    if not os.path.isdir(audio_directory):
+        os.makedirs(audio_directory)
     c_time = time.time()
     file_dl_path = await bot.download_media(message=m, progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
     await msg.edit("`Now Processing...`", parse_mode='md')
     os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file.wav')
+    audio_file_name = "temp/audio/file.wav"
     subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
                      'temp/file.wav',
                      '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le',
-                     'temp/audio/file.wav'])
-    base_directory = "temp/"
-    audio_directory = "temp/audio/"
-    audio_file_name = "temp/audio/file.wav"
-    srt_file_name = f'temp/{media.file_name.rsplit(".", 1)[0]}.srt'
-    
+                     audio_file_name])
+
     print("Splitting on silent parts in audio file")
     silenceRemoval(audio_file_name)
     
     # Output SRT file
+    srt_file_name = f'temp/{file_dl_path.rsplit(".", 1)[0]}.srt'
     file_handle = open(srt_file_name, "w")
     
     for file in tqdm(sort_alphanumeric(os.listdir(audio_directory))):
