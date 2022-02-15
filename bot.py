@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-from scipy.io.wavfile import read
+from scipy.io.wavfile import read as wavread
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -88,7 +88,7 @@ if not os.path.exists(f'model-{LANGUAGE_CODE}'):
 
 # Initialize model
 model = Model(f'model-{LANGUAGE_CODE}')
-sample_rate = model
+sample_rate = 16000
 rec = KaldiRecognizer(model, sample_rate)
 
 # Line count for SRT file
@@ -110,7 +110,7 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    data = read(audio_file)[1]
+    data = wavread(audio_file)[1]
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
