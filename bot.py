@@ -109,20 +109,17 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    file_size = len(sample_file_as_wave(input_file, sample_rate).stdout.read())
-        # Reinit process stdout to the beginning because seek is not possible with stdio
-        wf = sample_file_as_wave(input_file, sample_rate)
-
-    try:
-        r=sr.Recognizer()
-        with sr.AudioFile(audio_file) as source:
-            audio_data=r.record(source)
-            text=r.recognize_google(audio_data,language=lang)
-            print(text)
-            infered_text = text
-    except:
+    file_size = len(sample_file_as_wave(audio_file, sample_rate).stdout.read())
+    # Reinit process stdout to the beginning because seek is not possible with stdio
+    wf = sample_file_as_wave(audio_file, sample_rate)
+    data = wf.stdout.read(file_size)
+    if rec.AcceptWaveform(data):
+        # Convert json output to dict
+        result_dict = json.loads(rec.Result())
+        # Extract text values and append them to transcription list
+        infered_text = result_dict.get("text", "")
+    else:
         infered_text=""
-        pass
     
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
@@ -200,7 +197,7 @@ async def gen_transcript_and_send(msg, editable_msg, input_file, is_yt=True):
         if is_yt:
             data = wf.readframes(10000)  # use buffer of 10000
         else:
-            data = wf.stdout.read(10000)
+            
         processed_data_size += len(data)
         # Showing the progress
         percentage = processed_data_size * 100 / file_size
