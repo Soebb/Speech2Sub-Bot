@@ -13,7 +13,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 API_ID = os.environ.get("API_ID")
 API_HASH = os.environ.get("API_HASH")
 # vosk supported language(code), see supported languages here: https://github.com/alphacep/vosk-api
-LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "en-us")
+LANGUAGE_CODE = os.environ.get("LANG_CODE", "en-us")
 # language model download link (see available models here: https://alphacephei.com/vosk/models)
 MODEL_URL = os.environ.get("MODEL_DOWNLOAD_URL", "https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip")
 
@@ -73,7 +73,6 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    lang = os.environ.get("LANG_CODE")
     try:
         r=sr.Recognizer()
         with sr.AudioFile(audio_file) as source:
@@ -93,12 +92,12 @@ def ds_process_audio(audio_file, file_handle):
         write_to_file(file_handle, infered_text, line_count, limits)
 
 
-@Bot.on_message(filters.private & (filters.video | filters.document | filters.audio ) & ~filters.edited, group=-1)
+@Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice))
 async def speech2srt(bot, m):
     global line_count
     if m.document and not m.document.mime_type.startswith("video/"):
         return
-    media = m.audio or m.video or m.document
+    media = m.audio or m.video or m.document or m.voice
     msg = await m.reply("`Downloading..`", parse_mode='md')
     c_time = time.time()
     file_dl_path = await bot.download_media(message=m, file_name="temp/", progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
