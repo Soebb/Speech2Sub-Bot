@@ -157,5 +157,10 @@ def download_and_unpack_models(model_url):
 if not os.path.exists(f'model-{LANGUAGE_CODE}'):
     download_and_unpack_models(MODEL_URL)
 
-    
+def sample_file_as_wave(input_file, sample_rate):
+    return subprocess.Popen(['ffmpeg', '-loglevel', 'quiet', '-i',
+                             input_file,
+                             '-ar', str(sample_rate), '-ac', '1', '-f', 's16le', '-'],
+                            stdout=subprocess.PIPE)
+
 Bot.run()
