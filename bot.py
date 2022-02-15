@@ -20,7 +20,7 @@ LANGUAGE_CODE = os.environ.get("LANG_CODE", "en-us")
 MODEL_URL = os.environ.get("MODEL_DOWNLOAD_URL", "https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip")
 
 LANGUAGE_CODE = "fa"
-MODEL_URL = " "
+MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.5.zip"
 
 Bot = Client(
     "Bot",
