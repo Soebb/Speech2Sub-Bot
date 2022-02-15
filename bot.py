@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
+import soundfile as sf
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -109,8 +110,9 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    wf = wave.open(audio_file, "rb")
-    data = wf.readframes(wf.getnframes())
+    #wf = wave.open(audio_file, "rb")
+    #data = wf.readframes(wf.getnframes())
+    data = sf.read(audio_file)[0]
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
