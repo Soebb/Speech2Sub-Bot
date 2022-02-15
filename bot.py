@@ -110,14 +110,16 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    data = wavread(audio_file)[1]
+    wf = wave.open(audio_file, "rb")
+    file_size = os.path.getsize(audio_file)
+    data = wf.readframes(file_size)
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
         # Extract text values and append them to transcription list
         infered_text = result_dict.get("text", "")
     else:
-        infered_text=""
+        infered_text = ""
     
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
