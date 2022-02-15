@@ -9,9 +9,14 @@ import wave, math, os, json, shutil, subprocess, asyncio, time, re
 from vosk import Model, KaldiRecognizer
 
 
-BOT_TOKEN = " "
-API_ID = " "
-API_HASH = " "
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+API_ID = os.environ.get("API_ID")
+API_HASH = os.environ.get("API_HASH")
+# vosk supported language(code), see supported languages here: https://github.com/alphacep/vosk-api
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "en-us")
+# language model download link (see available models here: https://alphacephei.com/vosk/models)
+MODEL_URL = os.environ.get("MODEL_DOWNLOAD_URL", "https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip")
+
 LANGUAGE_CODE = "fa"
 MODEL_URL = " "
 
@@ -25,8 +30,10 @@ Bot = Client(
 START_TXT = """
 Hi {}
 I am Speech2Sub Bot.
+
 > `I can generate subtitles based on the speeches in medias.`
-Send me a media (video/audio) to get started.
+
+Send a video/audio/voice to get started.
 """
 
 START_BTN = InlineKeyboardMarkup(
