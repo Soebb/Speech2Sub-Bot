@@ -153,7 +153,7 @@ async def speech2srt(bot, m):
     silenceRemoval(audio_file_name)
     
     # Output SRT file
-    srt_file_name = f'temp/{file_dl_path.rsplit(".", 1)[0]}.srt'
+    srt_file_name = file_dl_path.rsplit(".", 1)[0] + '.srt'
     file_handle = open(srt_file_name, "w")
     
     for file in tqdm(sort_alphanumeric(os.listdir(audio_directory))):
@@ -171,6 +171,7 @@ async def speech2srt(bot, m):
 
     await msg.delete()
     os.remove(file_dl_path)
+    os.remove(srt_file_name)
     shutil.rmtree('temp/')
     line_count = 0
 
