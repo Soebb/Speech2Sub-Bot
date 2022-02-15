@@ -124,7 +124,32 @@ async def speech2srt(bot, m):
     shutil.rmtree('temp/audio/')
     line_count = 0
 
+def download_and_unpack_models(model_url):
+    print("Start Downloading the Language Model...")
+    r = requests.get(model_url, allow_redirects=True)
 
-  
+    total_size_in_bytes = int(r.headers.get('content-length', 0))
+    block_size = 1024  # 1 Kibibyte
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+
+    file_name = model_url.split('/models/')[1]
+    with open(file_name, 'wb') as file:
+        for data in r.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        print("ERROR, something went wrong")
+
+    print("Downloaded Successfully. Now unpacking the model..")
+    shutil.unpack_archive(file_name)
+    os.rename(file_name.rsplit('.', 1)[0], f'model-{LANGUAGE_CODE}')
+    os.remove(file_name)
+    print("unpacking Done.")
+
+if not os.path.exists(f'model-{LANGUAGE_CODE}'):
+    download_and_unpack_models(MODEL_URL)
+
     
 Bot.run()
