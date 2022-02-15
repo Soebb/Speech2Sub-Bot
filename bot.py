@@ -140,13 +140,18 @@ async def speech2srt(bot, m):
     msg = await m.reply("`Downloading..`", parse_mode='md')
     c_time = time.time()
     file_dl_path = await bot.download_media(message=m, file_name="temp/", progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
+    await msg.edit("`Now Processing...`", parse_mode='md')
     if not os.path.isdir('temp/audio/'):
         os.makedirs('temp/audio/')
-    os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file.wav')
-    await msg.edit("`Now Processing...`", parse_mode='md')
+    os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file0.wav')
+    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
+                     'temp/file0.wav',
+                     '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le',
+                     'temp/file.wav'])
+    os.remove('temp/file0.wav')
     base_directory = "temp/"
     audio_directory = "temp/audio/"
-    audio_file_name = "temp/audio/file.wav"
+    audio_file_name = "temp/audio/file0.wav"
     srt_file_name = f'temp/{media.file_name.rsplit(".", 1)[0]}.srt'
     
     print("Splitting on silent parts in audio file")
