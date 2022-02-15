@@ -54,6 +54,41 @@ async def start(bot, update):
         reply_markup=reply_markup
     )
 
+def download_and_unpack_models(model_url):
+    print("Start Downloading the Language Model...")
+    r = requests.get(model_url, allow_redirects=True)
+
+    total_size_in_bytes = int(r.headers.get('content-length', 0))
+    block_size = 1024  # 1 Kibibyte
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+
+    file_name = model_url.split('/models/')[1]
+    with open(file_name, 'wb') as file:
+        for data in r.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        print("ERROR, something went wrong")
+    else:
+        print("Downloaded Successfully. Now unpacking the model..")
+        shutil.unpack_archive(file_name)
+        model_target_dir = f'model-{LANGUAGE_CODE}'
+        if os.path.exists(model_target_dir):
+            os.remove(model_target_dir)
+        os.rename(file_name.rsplit('.', 1)[0], model_target_dir)
+        print("unpacking Done.")
+
+    os.remove(file_name)
+
+if not os.path.exists(f'model-{LANGUAGE_CODE}'):
+    download_and_unpack_models(MODEL_URL)
+
+# Initialize model
+model = Model(f'model-{LANGUAGE_CODE}')
+sample_rate = model
+rec = KaldiRecognizer(model, sample_rate)
 
 # Line count for SRT file
 line_count = 0
@@ -74,6 +109,10 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
+    file_size = len(sample_file_as_wave(input_file, sample_rate).stdout.read())
+        # Reinit process stdout to the beginning because seek is not possible with stdio
+        wf = sample_file_as_wave(input_file, sample_rate)
+
     try:
         r=sr.Recognizer()
         with sr.AudioFile(audio_file) as source:
@@ -135,36 +174,6 @@ async def speech2srt(bot, m):
     shutil.rmtree('temp/audio/')
     line_count = 0
 
-def download_and_unpack_models(model_url):
-    print("Start Downloading the Language Model...")
-    r = requests.get(model_url, allow_redirects=True)
-
-    total_size_in_bytes = int(r.headers.get('content-length', 0))
-    block_size = 1024  # 1 Kibibyte
-    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-
-    file_name = model_url.split('/models/')[1]
-    with open(file_name, 'wb') as file:
-        for data in r.iter_content(block_size):
-            progress_bar.update(len(data))
-            file.write(data)
-    progress_bar.close()
-
-    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-        print("ERROR, something went wrong")
-    else:
-        print("Downloaded Successfully. Now unpacking the model..")
-        shutil.unpack_archive(file_name)
-        model_target_dir = f'model-{LANGUAGE_CODE}'
-        if os.path.exists(model_target_dir):
-            os.remove(model_target_dir)
-        os.rename(file_name.rsplit('.', 1)[0], model_target_dir)
-        print("unpacking Done.")
-
-    os.remove(file_name)
-
-if not os.path.exists(f'model-{LANGUAGE_CODE}'):
-    download_and_unpack_models(MODEL_URL)
 
 
 async def gen_transcript_and_send(msg, editable_msg, input_file, is_yt=True):
@@ -178,11 +187,7 @@ async def gen_transcript_and_send(msg, editable_msg, input_file, is_yt=True):
         sample_rate = wf.getframerate()
         file_size = os.path.getsize(input_file)
     else:
-        sample_rate = 16000
-        file_size = len(sample_file_as_wave(input_file, sample_rate).stdout.read())
-        # Reinit process stdout to the beginning because seek is not possible with stdio
-        wf = sample_file_as_wave(input_file, sample_rate)
-
+        
     # Initialize model
     model = Model(model_path)
     rec = KaldiRecognizer(model, sample_rate)
