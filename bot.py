@@ -1,16 +1,19 @@
-import os, re, time
-import shutil
-import speech_recognition as sr
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
 from display_progress import progress_for_pyrogram
+import requests
+import wave, math, os, json, shutil, subprocess, asyncio, time, re
+from vosk import Model, KaldiRecognizer
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
+
+BOT_TOKEN = " "
+API_ID = " "
+API_HASH = " "
+LANGUAGE_CODE = "fa"
+MODEL_URL = " "
 
 Bot = Client(
     "Bot",
