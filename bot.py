@@ -110,10 +110,6 @@ def sort_alphanumeric(data):
 def ds_process_audio(audio_file, file_handle):  
     # Perform inference on audio segment
     global line_count
-    file_size = len(sample_file_as_wave(audio_file, sample_rate).stdout.read())
-    # Reinit process stdout to the beginning because seek is not possible with stdio
-    wf = sample_file_as_wave(audio_file, sample_rate)
-
     data = read(audio_file)[1]
     if rec.AcceptWaveform(data):
         # Convert json output to dict
@@ -145,7 +141,7 @@ async def speech2srt(bot, m):
         os.makedirs('temp/audio/')
     os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file.wav')
     subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
-                     'temp/file0.wav',
+                     'temp/file.wav',
                      '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le',
                      'temp/audio/file.wav'])
     base_directory = "temp/"
@@ -177,63 +173,5 @@ async def speech2srt(bot, m):
     shutil.rmtree('temp/audio/')
     line_count = 0
 
-
-
-async def gen_transcript_and_send(msg, editable_msg, input_file, is_yt=True):
-    model_path = f'model-{LANGUAGE_CODE}'
-    # Check if model path exists
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(os.path.basename(model_path) + " not found")
-
-    if is_yt:
-        wf = wave.open(input_file, "rb")
-        sample_rate = wf.getframerate()
-        file_size = os.path.getsize(input_file)
-    else:
-        
-    # Initialize model
-    model = Model(model_path)
-    rec = KaldiRecognizer(model, sample_rate)
-
-    # to store our results
-    transcription = []
-    processed_data_size = 0
-
-    while True:
-        if is_yt:
-            data = wf.readframes(10000)  # use buffer of 10000
-        else:
-            
-        processed_data_size += len(data)
-        # Showing the progress
-        percentage = processed_data_size * 100 / file_size
-        progress = "`Transcribing in Process...`\n[{0}{1}]\nPercentage : {2}%\n\n".format(
-            ''.join(["●" for i in range(math.floor(percentage / 5))]),
-            ''.join(["○" for i in range(20 - math.floor(percentage / 5))]),
-            round(percentage, 2)
-        )
-        try:
-            await editable_msg.edit(progress, parse_mode='md')
-        except:
-            pass
-        if len(data) == 0:
-            break
-        if rec.AcceptWaveform(data):
-            # Convert json output to dict
-            result_dict = json.loads(rec.Result())
-            # Extract text values and append them to transcription list
-            transcription.append(result_dict.get("text", ""))
-
-    # Get final bits of audio and flush the pipeline
-    final_result = json.loads(rec.FinalResult())
-    transcription.append(final_result.get("text", ""))
-    transcription_text = '. '.join(transcription)
-
-
-def sample_file_as_wave(input_file, sample_rate):
-    return subprocess.Popen(['ffmpeg', '-loglevel', 'quiet', '-i',
-                             input_file,
-                             '-ar', str(sample_rate), '-ac', '1', '-f', 's16le', '-'],
-                            stdout=subprocess.PIPE)
 
 Bot.run()
