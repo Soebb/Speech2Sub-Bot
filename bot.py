@@ -136,11 +136,11 @@ async def speech2srt(bot, m):
         return
     media = m.audio or m.video or m.document or m.voice
     msg = await m.reply("`Downloading..`", parse_mode='md')
-    c_time = time.time()
-    file_dl_path = await bot.download_media(message=m, file_name="temp/", progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
-    await msg.edit("`Now Processing...`", parse_mode='md')
     if not os.path.isdir('temp/audio/'):
         os.makedirs('temp/audio/')
+    c_time = time.time()
+    file_dl_path = await bot.download_media(message=m, progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
+    await msg.edit("`Now Processing...`", parse_mode='md')
     os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file.wav')
     subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
                      'temp/file.wav',
@@ -172,7 +172,7 @@ async def speech2srt(bot, m):
 
     await msg.delete()
     os.remove(file_dl_path)
-    shutil.rmtree('temp/audio/')
+    shutil.rmtree('temp/')
     line_count = 0
 
 
