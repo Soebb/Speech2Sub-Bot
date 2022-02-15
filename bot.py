@@ -110,7 +110,7 @@ def ds_process_audio(audio_file, file_handle):
     # Perform inference on audio segment
     global line_count
     wf = wave.open(audio_file, "rb")
-    data = wf.readframes(-1)
+    data = wf.readframes(wf.getnframes())
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
