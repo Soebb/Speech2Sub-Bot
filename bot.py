@@ -143,7 +143,12 @@ async def speech2srt(bot, m):
     await msg.edit("`Now Processing...`", parse_mode='md')
     audio_file_name = "temp/file.wav"
     os.system(f'ffmpeg -i "{file_dl_path}" -vn -y {audio_file_name}')
-    input_as_wave = AudioSegment.from_wav(audio_file_name)
+    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
+                     audio_file_name,
+                     '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le', '-y',
+                     'temp/mono.wav'])
+
+    input_as_wave = AudioSegment.from_wav('temp/mono.wav')
 
     print("Splitting on silent parts in audio file")
     silenceRemoval(audio_file_name)
@@ -154,7 +159,7 @@ async def speech2srt(bot, m):
     
     for file in tqdm(sort_alphanumeric(os.listdir(audio_directory))):
         audio_segment_path = os.path.join(audio_directory, file)
-        if audio_segment_path.split("/")[-1] != audio_file_name.split("/")[-1]:
+        if not audio_segment_path.split("/")[-1] in [audio_file_name.split("/")[-1], 'mono.wav']:
             ds_process_audio(audio_segment_path, file_handle)
 
     print("\nSRT file saved to", srt_file_name)
