@@ -7,4 +7,3 @@ scipy
 tqdm
 vosk
 requests
-librosa
