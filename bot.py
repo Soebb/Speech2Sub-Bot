@@ -156,7 +156,7 @@ async def speech2srt(bot, m):
         audio_segment_path = os.path.join(audio_directory, file)
         if audio_segment_path.split("/")[-1] != audio_file_name.split("/")[-1]:
             ds_process_audio(audio_segment_path, file_handle)
-            return
+
     print("\nSRT file saved to", srt_file_name)
     file_handle.close()
 
