@@ -114,7 +114,7 @@ def ds_process_audio(audio_file, file_handle):
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
     print(limits)
-    exit(0)
+    return
     target_piece = input_as_wave[int(limits[0]) * 1000:int(limits[1]) * 1000]
 
     wf = wave.open(target_piece, "rb")
@@ -158,7 +158,7 @@ async def speech2srt(bot, m):
         audio_segment_path = os.path.join(audio_directory, file)
         if audio_segment_path.split("/")[-1] != audio_file_name.split("/")[-1]:
             ds_process_audio(audio_segment_path, file_handle)
-            
+            return
     print("\nSRT file saved to", srt_file_name)
     file_handle.close()
 
