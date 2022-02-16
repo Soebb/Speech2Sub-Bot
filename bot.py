@@ -113,6 +113,7 @@ def ds_process_audio(audio_file, file_handle):
     global line_count
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
+    print(limits)
     startTime, endTime = limits
     target_piece = input_as_wave[int(startTime) * 1000:int(endTime) * 1000]
 
