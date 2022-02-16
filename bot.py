@@ -114,8 +114,11 @@ def ds_process_audio(audio, audio_seg, file_handle):
     
     wf = wave.open(audio_file, "rb")
     data = wf.readframes(wf.getnframes())
-    result_dict = json.loads(rec.Result())
-    infered_text = result_dict.get("text", "")
+    if rec.AcceptWaveform(data):
+        result_dict = json.loads(rec.Result())
+        infered_text = result_dict.get("text", "")
+    else:
+        infered_text = ""
 
     if len(infered_text) != 0:
         line_count += 1
