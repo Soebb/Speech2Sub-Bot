@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-import soundfile as sf
+import librosa
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -112,7 +112,7 @@ def ds_process_audio(audio_file, file_handle):
     global line_count
     #wf = wave.open(audio_file, "rb")
     #data = wf.readframes(wf.getnframes())
-    data = sf.read(audio_file)[0]
+    data = librosa.load(audio_file)[0]
     if rec.AcceptWaveform(data):
         # Convert json output to dict
         result_dict = json.loads(rec.Result())
