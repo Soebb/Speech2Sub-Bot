@@ -93,6 +93,8 @@ rec = KaldiRecognizer(model, sample_rate)
 
 # Line count for SRT file
 line_count = 0
+# to store the sended input file as wave
+input_as_wave = ""
 
 def sort_alphanumeric(data):
     """Sort function to sort os.listdir() alphanumerically
@@ -107,12 +109,14 @@ def sort_alphanumeric(data):
     return sorted(data, key = alphanum_key)
 
 
-def ds_process_audio(audio, audio_seg, file_handle):  
+def ds_process_audio(audio_file, file_handle):  
     global line_count
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
-    
-    wf = wave.open(audio_file, "rb")
+    startTime, endTime = limits
+    target_piece = input_as_wave[int(startTime) * 1000:int(endTime) * 1000]
+
+    wf = wave.open(target_piece, "rb")
     data = wf.readframes(wf.getnframes())
     if rec.AcceptWaveform(data):
         result_dict = json.loads(rec.Result())
@@ -127,7 +131,7 @@ def ds_process_audio(audio, audio_seg, file_handle):
 
 @Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice) & ~filters.edited, group=-1)
 async def speech2srt(bot, m):
-    global line_count
+    global line_count, input_as_wave
     if m.document and not m.document.mime_type.startswith("video/"):
         return
     media = m.audio or m.video or m.document or m.voice
@@ -140,6 +144,7 @@ async def speech2srt(bot, m):
     await msg.edit("`Now Processing...`", parse_mode='md')
     audio_file_name = "temp/file.wav"
     os.system(f'ffmpeg -i "{file_dl_path}" -vn -y {audio_file_name}')
+    input_as_wave = AudioSegment.from_wav(audio_file_name)
 
     print("Splitting on silent parts in audio file")
     silenceRemoval(audio_file_name)
@@ -151,7 +156,7 @@ async def speech2srt(bot, m):
     for file in tqdm(sort_alphanumeric(os.listdir(audio_directory))):
         audio_segment_path = os.path.join(audio_directory, file)
         if audio_segment_path.split("/")[-1] != audio_file_name.split("/")[-1]:
-            ds_process_audio(audio_file_name, audio_segment_path, file_handle)
+            ds_process_audio(audio_segment_path, file_handle)
             
     print("\nSRT file saved to", srt_file_name)
     file_handle.close()
