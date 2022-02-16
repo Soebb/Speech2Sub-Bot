@@ -114,7 +114,8 @@ def ds_process_audio(audio_file, file_handle):
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
     target_piece = input_as_wave[int(limits[0].split('.')[0]) * 1000 + int(limits[0].split('.')[1][:1]+"00"):int(limits[1].split('.')[0]) * 1000 + int(limits[1].split('.')[1][:1]+"00")]
-    wf = wave.open(target_piece, "rb")
+    target_piece.export('target_piece.wav', format='wav')
+    wf = wave.open('target_piece.wav', "rb")
     data = wf.readframes(wf.getnframes())
     if rec.AcceptWaveform(data):
         result_dict = json.loads(rec.Result())
@@ -125,7 +126,7 @@ def ds_process_audio(audio_file, file_handle):
     if len(infered_text) != 0:
         line_count += 1
         write_to_file(file_handle, infered_text, line_count, limits)
-
+    os.remove('target_piece.wav')
 
 @Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice) & ~filters.edited, group=-1)
 async def speech2srt(bot, m):
