@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-import librosa
+from pydub import AudioSegment
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -107,70 +107,56 @@ def sort_alphanumeric(data):
     return sorted(data, key = alphanum_key)
 
 
-def ds_process_audio(audio_file, file_handle):  
-    # Perform inference on audio segment
+def ds_process_audio(audio, audio_seg, file_handle):  
     global line_count
-    #wf = wave.open(audio_file, "rb")
-    #data = wf.readframes(wf.getnframes())
-    data = librosa.load(audio_file)[0]
-    if rec.AcceptWaveform(data):
-        # Convert json output to dict
-        result_dict = json.loads(rec.Result())
-        # Extract text values and append them to transcription list
-        infered_text = result_dict.get("text", "")
-    else:
-        infered_text = ""
-    
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
     
+    wf = wave.open(audio_file, "rb")
+    data = wf.readframes(wf.getnframes())
+    result_dict = json.loads(rec.Result())
+    infered_text = result_dict.get("text", "")
+
     if len(infered_text) != 0:
         line_count += 1
         write_to_file(file_handle, infered_text, line_count, limits)
 
 
-@Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice))
+@Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice) & ~filters.edited, group=-1)
 async def speech2srt(bot, m):
     global line_count
     if m.document and not m.document.mime_type.startswith("video/"):
         return
     media = m.audio or m.video or m.document or m.voice
     msg = await m.reply("`Downloading..`", parse_mode='md')
-    audio_directory = "temp/audio/"
+    audio_directory = "temp/"
     if not os.path.isdir(audio_directory):
         os.makedirs(audio_directory)
     c_time = time.time()
     file_dl_path = await bot.download_media(message=m, progress=progress_for_pyrogram, progress_args=("Downloading..", msg, c_time))
     await msg.edit("`Now Processing...`", parse_mode='md')
-    os.system(f'ffmpeg -i "{file_dl_path}" -vn temp/file.wav')
-    audio_file_name = "temp/audio/file.wav"
-    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
-                     'temp/file.wav',
-                     '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le',
-                     audio_file_name])
+    audio_file_name = "temp/file.wav"
+    os.system(f'ffmpeg -i "{file_dl_path}" -vn -y {audio_file_name}')
 
     print("Splitting on silent parts in audio file")
     silenceRemoval(audio_file_name)
     
     # Output SRT file
-    srt_file_name = 'temp/' + os.path.basename(file_dl_path).rsplit(".", 1)[0] + '.srt'
+    srt_file_name = os.path.basename(file_dl_path).rsplit(".", 1)[0] + '.srt'
     file_handle = open(srt_file_name, "w")
     
     for file in tqdm(sort_alphanumeric(os.listdir(audio_directory))):
         audio_segment_path = os.path.join(audio_directory, file)
         if audio_segment_path.split("/")[-1] != audio_file_name.split("/")[-1]:
-            ds_process_audio(audio_segment_path, file_handle)
+            ds_process_audio(audio_file_name, audio_segment_path, file_handle)
             
     print("\nSRT file saved to", srt_file_name)
     file_handle.close()
 
-    try:
-        await m.reply_document(document=srt_file_name, caption=media.file_name.rsplit(".", 1)[0])
-    except FloodWait as e:
-        await asyncio.sleep(e.x)
-
+    await m.reply_document(srt_file_name)
     await msg.delete()
     os.remove(file_dl_path)
+    os.remove(srt_file_name)
     shutil.rmtree('temp/')
     line_count = 0
 
