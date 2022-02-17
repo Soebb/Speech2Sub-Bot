@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
 from display_progress import progress_for_pyrogram
@@ -10,16 +9,11 @@ import wave, math, os, json, shutil, subprocess, asyncio, time, re
 from vosk import Model, KaldiRecognizer
 
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
-# vosk supported language(code), see supported languages here: https://github.com/alphacep/vosk-api
-LANGUAGE_CODE = os.environ.get("LANG_CODE", "en-us")
-# language model download link (see available models here: https://alphacephei.com/vosk/models)
-MODEL_URL = os.environ.get("MODEL_DOWNLOAD_URL", "https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip")
-
+BOT_TOKEN = " "
+API_ID = " "
+API_HASH = " "
 LANGUAGE_CODE = "fa"
-MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.5.zip"
+MODEL_URL = " "
 
 Bot = Client(
     "Bot",
