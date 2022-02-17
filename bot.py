@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tqdm import tqdm
-from pydub import AudioSegment
 from pyrogram.errors import FloodWait
 from segmentAudio import silenceRemoval
 from writeToFile import write_to_file
@@ -93,8 +92,6 @@ rec = KaldiRecognizer(model, sample_rate)
 
 # Line count for SRT file
 line_count = 0
-# to store the sended input file as wave
-input_as_wave = ""
 
 def sort_alphanumeric(data):
     """Sort function to sort os.listdir() alphanumerically
@@ -113,9 +110,12 @@ def ds_process_audio(audio_file, file_handle):
     global line_count
     # File name contains start and end times in seconds. Extract that
     limits = audio_file.split("/")[-1][:-4].split("_")[-1].split("-")
-    target_piece = input_as_wave[int(limits[0].split('.')[0]) * 1000 + int(limits[0].split('.')[1][:1]+"00"):int(limits[1].split('.')[0]) * 1000 + int(limits[1].split('.')[1][:1]+"00")]
-    target_piece.export('target_piece.wav', format='wav')
-    wf = wave.open('target_piece.wav', "rb")
+    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
+                     'temp/file.wav', '-ss', limits[0], '-to', limits[1],
+                     '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le', '-y',
+                     'temp/mono.wav'])
+
+    wf = wave.open('temp/mono.wav', "rb")
     data = wf.readframes(wf.getnframes())
     if rec.AcceptWaveform(data):
         result_dict = json.loads(rec.Result())
@@ -130,7 +130,7 @@ def ds_process_audio(audio_file, file_handle):
 
 @Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice) & ~filters.edited, group=-1)
 async def speech2srt(bot, m):
-    global line_count, input_as_wave
+    global line_count
     if m.document and not m.document.mime_type.startswith("video/"):
         return
     media = m.audio or m.video or m.document or m.voice
@@ -143,12 +143,6 @@ async def speech2srt(bot, m):
     await msg.edit("`Now Processing...`", parse_mode='md')
     audio_file_name = "temp/file.wav"
     os.system(f'ffmpeg -i "{file_dl_path}" -vn -y {audio_file_name}')
-    subprocess.call(['ffmpeg', '-loglevel', 'quiet', '-i',
-                     audio_file_name,
-                     '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le', '-y',
-                     'temp/mono.wav'])
-
-    input_as_wave = AudioSegment.from_wav('temp/mono.wav')
 
     print("Splitting on silent parts in audio file")
     silenceRemoval(audio_file_name)
