@@ -126,7 +126,7 @@ def ds_process_audio(audio_file, file_handle):
     if len(infered_text) != 0:
         line_count += 1
         write_to_file(file_handle, infered_text, line_count, limits)
-    os.remove('target_piece.wav')
+
 
 @Bot.on_message(filters.private & (filters.video | filters.document | filters.audio | filters.voice) & ~filters.edited, group=-1)
 async def speech2srt(bot, m):
